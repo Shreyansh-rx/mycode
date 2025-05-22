@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Internet Time Capsule</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1c92d2, #f2fcfe);
+      margin: 20px;
+      align-items: center;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+    }
+    input[type="date"] {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 8px 16px;
+    }
+    #outputMessage {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Internet Time Capsule</h1>
+  <textarea id="capsuleMessage" placeholder="Write your message here..."></textarea><br />
+  <input type="date" id="unlockDate" /><br />
+  <button onclick="saveMessage()">Save Message</button>
+
+  <div id="outputMessage"></div>
+
+  <script>
+    function saveMessage() {
+      const message = document.getElementById('capsuleMessage').value.trim();
+      const unlockDate = document.getElementById('unlockDate').value;
+
+      if (!message || !unlockDate) {
+        alert('Please enter both a message and a date.');
+        return;
+      }
+
+      const unlockTime = new Date(unlockDate).getTime();
+      localStorage.setItem('capsuleMessage', message);
+      localStorage.setItem('unlockTime', unlockTime);
+
+      alert('Message saved!');
+      displayMessage();
+    }
+
+    function displayMessage() {
+      const message = localStorage.getItem('capsuleMessage');
+      const unlockTime = localStorage.getItem('unlockTime');
+
+      const output = document.getElementById('outputMessage');
+      output.textContent = '';
+
+      if (message && unlockTime) {
+        const now = Date.now();
+        if (now >= parseInt(unlockTime)) {
+          output.textContent = 'Your message:\n' + message;
+        } else {
+          const unlockDate = new Date(parseInt(unlockTime));
+          output.textContent = 'Your message is locked until ' + unlockDate.toDateString() + '.';
+        }
+      }
+    }
+
+    window.onload = displayMessage;
+  </script>
+</body>
+</html>
