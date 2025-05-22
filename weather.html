@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #d0f0f0;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #005b5b;
+    }
+
+    input {
+      padding: 8px;
+      width: 180px;
+    }
+
+    button {
+      padding: 8px 15px;
+      background: #008080;
+      color: white;
+      border: none;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #003333;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Weather Checker</h1>
+  <p>Type your city name:</p>
+
+  <input type="text" id="place">
+  <button onclick="checkWeather()">Show</button>
+
+  <div id="output"></div>
+
+  <script>
+    function checkWeather() {
+      let cityName = document.getElementById("place").value;
+      let key = "YOUR_API_KEY";
+      let link = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${key}&units=metric`;
+
+      fetch(link)
+        .then(res => res.json())
+        .then(info => {
+          if (info.cod === 200) {
+            let degree = info.main.temp;
+            let mood = info.weather[0].description;
+            document.getElementById("output").innerHTML =
+              `${cityName} has ${degree}°C and ${mood}.`;
+          } else {
+            document.getElementById("output").innerText = "Couldn't find that place.";
+          }
+        })
+        .catch(() => {
+          document.getElementById("output").innerText = "Something went wrong.";
+        });
+    }
+  </script>
+
+</body>
+</html>
